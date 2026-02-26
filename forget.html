@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant AI - Forgot Password</title>
+
+<style>
+
+body{
+  margin:0;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(-45deg,#0f9b0f,#00c853,#1b5e20,#4caf50);
+  background-size:400% 400%;
+  animation:bgMove 8s infinite alternate;
+}
+
+/* Animated background */
+@keyframes bgMove{
+  0%{background-position:0% 50%;}
+  100%{background-position:100% 50%;}
+}
+
+.container{
+  background:rgba(255,255,255,0.15);
+  backdrop-filter:blur(15px);
+  padding:40px;
+  width:350px;
+  border-radius:20px;
+  box-shadow:0 0 30px rgba(0,0,0,0.3);
+  text-align:center;
+  animation:fadeIn 1.5s ease;
+}
+
+@keyframes fadeIn{
+  from{opacity:0; transform:translateY(30px);}
+  to{opacity:1; transform:translateY(0);}
+}
+
+h2{
+  color:white;
+  margin-bottom:20px;
+}
+
+.input-box{
+  position:relative;
+  margin:20px 0;
+}
+
+.input-box input{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  outline:none;
+  font-size:15px;
+}
+
+.input-box label{
+  position:absolute;
+  left:12px;
+  top:12px;
+  color:#555;
+  transition:0.3s;
+}
+
+.input-box input:focus + label,
+.input-box input:valid + label{
+  top:-10px;
+  left:8px;
+  font-size:12px;
+  color:white;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#00e676;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+  transition:0.3s;
+}
+
+button:hover{
+  background:#00c853;
+  transform:scale(1.05);
+}
+
+button.loading{
+  background:#999;
+  pointer-events:none;
+}
+
+.message{
+  margin-top:15px;
+  font-weight:bold;
+}
+
+.success{ color:#00e676; }
+.error{ color:#ff5252; }
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>🌿 Reset Password</h2>
+
+<div class="input-box">
+  <input type="email" id="email" required>
+  <label>Email</label>
+</div>
+
+<div class="input-box">
+  <input type="password" id="newPassword" required>
+  <label>New Password</label>
+</div>
+
+<button id="resetBtn" onclick="resetPassword()">Reset Password</button>
+
+<div id="message" class="message"></div>
+
+</div>
+
+<script>
+
+async function resetPassword(){
+
+  const email=document.getElementById("email").value.trim();
+  const newPassword=document.getElementById("newPassword").value.trim();
+  const message=document.getElementById("message");
+  const btn=document.getElementById("resetBtn");
+
+  if(email==="" || newPassword===""){
+    message.innerHTML="<span class='error'>All fields required</span>";
+    return;
+  }
+
+  btn.classList.add("loading");
+  btn.innerText="Updating...";
+
+  try{
+    const response=await fetch("http://localhost:5000/forgot",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({email,newPassword})
+    });
+
+    if(response.ok){
+      message.innerHTML="<span class='success'>Password Updated Successfully 🌿</span>";
+      setTimeout(()=>{
+        window.location="login.html";
+      },1500);
+    }else{
+      message.innerHTML="<span class='error'>User not found</span>";
+    }
+
+  }catch(error){
+    message.innerHTML="<span class='error'>Server not running</span>";
+  }
+
+  btn.classList.remove("loading");
+  btn.innerText="Reset Password";
+}
+
+</script>
+
+</body>
+</html>
