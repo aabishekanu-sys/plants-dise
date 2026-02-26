@@ -42,7 +42,7 @@ const History = mongoose.model('History', historySchema);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'html')));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // ====== MULTER SETUP ======
@@ -131,4 +131,5 @@ app.post('/analyze', upload.single('file'), async (req, res) => {
 
 // ====== START SERVER ======
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
+
 
